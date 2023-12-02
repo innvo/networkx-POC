@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import random
 import numpy as np
+import scipy
 
-node_count = 10
+node_count = 10000
 # Generate a list of random node IDs
 node_ids = list(range(1, node_count + 1))
 
