@@ -1,6 +1,7 @@
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 # Hardcoded edges and nodes data
 edges_data = pd.DataFrame({
@@ -45,4 +46,10 @@ edge_labels = {(u, v): G.edges[u, v]['edge_type'] for u, v in G.edges}
 # Plot the graph
 nx.draw(G, pos, node_color=colors, edge_color=edge_colors, labels=labels, with_labels=True)
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+# Create a legend
+legend_handles = [mpatches.Patch(color=color, label=node_type) for node_type, color in color_map.items()]
+plt.legend(handles=legend_handles)
+
 plt.show()
+
