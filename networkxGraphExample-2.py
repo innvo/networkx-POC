@@ -6,7 +6,7 @@ import random
 import numpy as np
 import scipy
 
-node_count = 10000
+node_count =20
 # Generate a list of random node IDs
 node_ids = list(range(1, node_count + 1))
 
@@ -62,7 +62,7 @@ for _, row in edges_data.iterrows():
 pos = nx.spring_layout(G)
 
 # Create a node size list
-node_size = [10000 / len(G.nodes) for _ in G.nodes]
+node_size = [25000 / len(G.nodes) for _ in G.nodes]
 # Create a node size dictionary
 node_size_dict = {node: size for node, size in zip(G.nodes, node_size)}
 print(node_size)
@@ -81,7 +81,7 @@ edge_colors = [edge_color_map[G.edges[edge]['edge_type']] for edge in G.edges]
 
 # Create an edge labels dictionary
 # edge_labels = {(u, v): G.edges[u, v]['edge_type'] for u, v in G.edges}
-edge_labels = {(u, v): G.edges[u, v]['edge_type'] if node_size_dict[u] >= 250 and node_size_dict[v] >= 250 else '' for u, v in G.edges}
+edge_labels = {(u, v): G.edges[u, v]['edge_type'] if node_size_dict[u] >= 1000 and node_size_dict[v] >= 1000 else '' for u, v in G.edges}
 
 # Set the figure size
 plt.figure(figsize=(10, 10), dpi=80)
@@ -115,6 +115,6 @@ ylim = ax.get_ylim()
 # Add a border
 plt.plot([xlim[0], xlim[0], xlim[1], xlim[1], xlim[0]], [ylim[0], ylim[1], ylim[1], ylim[0], ylim[0]], color='black')
 
-
+# Plot the graph
 plt.show()
 
