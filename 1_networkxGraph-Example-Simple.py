@@ -7,7 +7,8 @@ import matplotlib.patches as mpatches
 edges_data = pd.DataFrame({
     'src': ['A', 'A'],
     'dst': ['B', 'C'],
-    'edge_type': ['person_address', 'person_receipt']
+    'edge_type': ['person_address', 'person_receipt'],
+    'role': ['', 'attorney']
 })
 
 nodes_data = pd.DataFrame({
@@ -17,14 +18,14 @@ nodes_data = pd.DataFrame({
 })
 
 # Create a networkx graph
-G = nx.Graph()
+G = nx.DiGraph()
 
 # Add nodes and edges to the graph
 for _, row in nodes_data.iterrows():
     G.add_node(row['id'], node_type=row['node_type'], node_name=row['node_name'])
 
 for _, row in edges_data.iterrows():
-    G.add_edge(row['src'], row['dst'], edge_type=row['edge_type'])
+    G.add_edge(row['src'], row['dst'], edge_type=row['edge_type'], role=row['role'])
 
 # Generate a layout for the graph
 pos = nx.spring_layout(G)
@@ -41,8 +42,10 @@ edge_color_map = {'person_address': 'orange', 'person_receipt': 'blue'}
 edge_colors = [edge_color_map[G.edges[edge]['edge_type']] for edge in G.edges]
 
 # Create an edge labels dictionary
-edge_labels = {(u, v): G.edges[u, v]['edge_type'] for u, v in G.edges}
-
+#edge_labels = {(u, v): G.edges[u, v]['edge_type'] for u, v in G.edges}
+# edge_labels = {(u, v): G.edges[u, v]['role'] if G.edges[u, v]['edge_type'] == 'person_receipt' and G.edges[u, v]['role'] == 'attorney' else G.edges[u, v]['edge_type'] for u, v in G.edges}
+# Create an edge labels dictionary
+edge_labels = {(u, v): "Role: " + G.edges[u, v]['role'] if G.edges[u, v]['edge_type'] == 'person_receipt' and G.edges[u, v]['role'] == 'attorney' else G.edges[u, v]['edge_type'] for u, v in G.edges}
 # Set the figure size
 plt.figure(figsize=(10, 10), dpi=80)
 

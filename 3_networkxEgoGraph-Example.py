@@ -64,7 +64,7 @@ edges_data = pd.DataFrame({
 #print((edges_data))
 
 # Create a networkx graph
-G = nx.Graph()
+G = nx.DiGraph()
 
 # Add nodes and edges to the graph
 for _, row in nodes_data.iterrows():
@@ -102,7 +102,7 @@ print(ego_node_size_dict)
 
 # Create a node labels dictionary for the ego graph
 #ego_labels = {node: ego_G.nodes[node]['node_name'] for node in ego_G.nodes}
-ego_labels = {node: ego_G.nodes[node]['node_name'] if size >= 250 else '' for node,size in zip(ego_G.nodes, ego_node_size)}
+ego_labels = {node: ego_G.nodes[node]['node_name'] if size >= 1250 else '' for node,size in zip(ego_G.nodes, ego_node_size)}
 
 # Create an edge color map for the ego graph
 edge_color_map = {'person_address': 'orange', 'person_receipt': 'blue', 'address_person': 'purple'}
