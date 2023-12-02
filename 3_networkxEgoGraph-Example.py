@@ -19,7 +19,7 @@ nodes_data = pd.DataFrame({
     'node_name': ['ERIC', '123 MAIN ST', 'R12345','DENISE']
 })
 
-node_count=40
+node_count=25
 # Generate a list of random node IDs
 node_ids = list(range(1, node_count + 1))
 
@@ -88,10 +88,10 @@ ego_pos = nx.spring_layout(ego_G)
 
 # Create a node color map for the ego graph
 color_map = {'person': 'red', 'address': 'green', 'receipt': 'yellow'}
-ego_colors = [color_map[ego_G.nodes[node]['node_type']] for node in ego_G.nodes]
+ego_node_colors = [color_map[ego_G.nodes[node]['node_type']] for node in ego_G.nodes]
 
 # Set the color of the ego node to purple
-ego_colors[list(ego_G.nodes).index(ego_node)] = 'purple'
+ego_node_colors[list(ego_G.nodes).index(ego_node)] = 'purple'
 
 # Create a node size list
 ego_node_size = [25000 / len(ego_G.nodes) for _ in ego_G.nodes]
@@ -102,15 +102,48 @@ print(ego_node_size_dict)
 
 # Create a node labels dictionary for the ego graph
 #ego_labels = {node: ego_G.nodes[node]['node_name'] for node in ego_G.nodes}
-ego_labels = {node: ego_G.nodes[node]['node_name'] if size >= 1250 else '' for node,size in zip(ego_G.nodes, ego_node_size)}
+ego_node_labels = {node: ego_G.nodes[node]['node_name'] if size >= 250 else '' for node,size in zip(ego_G.nodes, ego_node_size)}
 
 # Create an edge color map for the ego graph
 edge_color_map = {'person_address': 'orange', 'person_receipt': 'blue', 'address_person': 'purple'}
 ego_edge_colors = [edge_color_map[ego_G.edges[edge]['edge_type']] for edge in ego_G.edges]
 
-# Plot the ego graph
-nx.draw(ego_G, ego_pos, node_color=ego_colors, edge_color=ego_edge_colors, with_labels=True, labels=ego_labels)
 
-# Show the plot
+# Create an edge labels dictionary
+# edge_labels = {(u, v): G.edges[u, v]['edge_type'] for u, v in G.edges}
+ego_edge_labels = {(u, v): ego_G.edges[u, v]['edge_type'] if ego_node_size_dict[u] >= 1000 and ego_node_size_dict[v] >= 1000 else '' for u, v in ego_G.edges}
+
+# Set the figure size
+plt.figure(figsize=(10, 10), dpi=80)
+
+# Adjust the top of the subplot parameters
+plt.subplots_adjust(top=2.0)
+
+# Plot the ego graph
+nx.draw(ego_G, ego_pos, node_color=ego_node_colors, edge_color=ego_edge_colors, with_labels=True, labels=ego_node_labels)
+nx.draw_networkx_edge_labels(ego_G, ego_pos, edge_labels=ego_edge_labels)
+
+# Create a legend
+node_legend_handles = [mpatches.Patch(color=color, label=node_type) for node_type, color in color_map.items()]
+edge_legend_handles = [mpatches.Patch(color=color, label=edge_type) for edge_type, color in edge_color_map.items()]
+
+plt.legend(handles=node_legend_handles + edge_legend_handles, loc='upper left')
+
+# Add a title (acting as subtitle)
+plt.title('Subtitle Here') ## THIS IS NOT WORKING
+
+# Add a suptitle (acting as main title)
+plt.suptitle('Example Network Ego Graph', weight='bold', fontsize='16')
+# Get the current axes
+ax = plt.gca()
+
+# Get the range of the axes
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+# Add a border
+plt.plot([xlim[0], xlim[0], xlim[1], xlim[1], xlim[0]], [ylim[0], ylim[1], ylim[1], ylim[0], ylim[0]], color='black')
+
+# Plot the graph
 plt.show()
 
