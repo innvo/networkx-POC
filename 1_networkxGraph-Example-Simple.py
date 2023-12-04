@@ -14,7 +14,8 @@ edges_data = pd.DataFrame({
 nodes_data = pd.DataFrame({
     'id': ['A','B','C'],
     'node_type': ['person', 'address', 'receipt'],
-    'node_name': ['ERIC', '123 MAIN ST', 'R12345']
+    'node_name': ['ERIC', '123 MAIN ST', 'R12345'],
+    'receipt_payment_date': ['', '', '2023-12-05']
 })
 
 # Create a networkx graph
@@ -22,7 +23,7 @@ G = nx.DiGraph()
 
 # Add nodes and edges to the graph
 for _, row in nodes_data.iterrows():
-    G.add_node(row['id'], node_type=row['node_type'], node_name=row['node_name'])
+    G.add_node(row['id'], node_type=row['node_type'], node_name=row['node_name'], receipt_payment_date=row['receipt_payment_date'])
 
 for _, row in edges_data.iterrows():
     G.add_edge(row['src'], row['dst'], edge_type=row['edge_type'], role=row['role'])
@@ -35,7 +36,8 @@ color_map = {'person': 'red', 'address': 'green', 'receipt': 'yellow'}
 colors = [color_map[G.nodes[node]['node_type']] for node in G.nodes]
 
 # Create a node labels dictionary
-labels = {node: f"{G.nodes[node]['node_name'][:10]} ({G.degree(node)})" for node in G.nodes}
+labels = {node: f"{G.nodes[node]['node_name'][:10]} ({G.degree(node)}" for node in G.nodes}
+
 
 # Create an edge color map
 edge_color_map = {'person_address': 'orange', 'person_receipt': 'blue'}
@@ -57,8 +59,14 @@ node_size = [10000 / len(G.nodes) for _ in G.nodes]
 print(node_size)
 
 # Plot the graph
-nx.draw(G, pos, node_color=colors, edge_color=edge_colors, node_size=node_size,labels=labels, with_labels=True)
+nx.draw(G, pos, node_color=colors, edge_color=edge_colors, node_size=node_size,labels=labels, with_labels=False)
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+# Plot the node lable
+for node, (x, y) in pos.items():
+    plt.annotate(G.nodes[node]['node_name'], xy=(x, y), xytext=(0, 10), textcoords='offset points', ha='center', va='bottom')
+    if G.nodes[node]['node_type'] == 'receipt':
+        plt.annotate(G.nodes[node]['receipt_payment_date'], xy=(x, y), xytext=(0, -10), textcoords='offset points', ha='center', va='top')
 
 # Create a legend
 node_legend_handles = [mpatches.Patch(color=color, label=node_type) for node_type, color in color_map.items()]
