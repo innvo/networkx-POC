@@ -2,7 +2,7 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
-max_edges_edge_type = 2
+max_edges_edge_type = 1
 
 # Your data
 edges_data = pd.DataFrame({
@@ -29,20 +29,33 @@ for _, row in nodes_data.iterrows():
 for _, row in edges_data.iterrows():
     G.add_edge(row['src'], row['dst'], edge_type=row['edge_type'], role=row['role'])
 
-# # Check for nodes with count > 2
-# node_counts = edges_data['src'].value_counts()
-# nodes_over_2 = node_counts[node_counts > 2].index.tolist()
+# Get unique edge types
+unique_edge_types = edges_data['edge_type'].unique()
 
-# Check for edges with count > 2
+# Ask user to select edge types to display
+print("Select the edge types to display (separated by commas):")
+for i, edge_type in enumerate(unique_edge_types):
+    print(f"{i}: {edge_type}")
+
+selected_edge_types_indices = input("Enter the numbers corresponding to the edge types: ")
+selected_edge_types_indices = list(map(int, selected_edge_types_indices.split(',')))
+
+# Get the selected edge types
+selected_edge_types = [unique_edge_types[i] for i in selected_edge_types_indices]
+
+# Check for edges with count > max_edges_edge_type
 edge_counts = edges_data.groupby(['edge_type']).size().reset_index(name='count')
 edge_counts_list = edge_counts.to_records(index=False).tolist()
+#print(edge_counts_list)
 
 for edge_type, count in edge_counts_list:
     if count > max_edges_edge_type:
         print(f"Warning: {edge_type} has count > {max_edges_edge_type}")
 
 # Filter out edges with count > 1
-edges_to_display = [(u, v) for u, v, data in G.edges(data=True) if data['edge_type'] not in [edge_type for edge_type, count in edge_counts_list if count > max_edges_edge_type]]
+#edges_to_display = [(u, v) for u, v, data in G.edges(data=True) if data['edge_type'] not in [edge_type for edge_type, count in edge_counts_list if count > max_edges_edge_type]]
+edges_to_display = [(u, v) for u, v, data in G.edges(data=True) if data['edge_type'] in selected_edge_types 
+                    and data['edge_type'] not in [edge_type for edge_type, count in edge_counts_list if count > max_edges_edge_type]]
 
 # Create a set of nodes to display, including only nodes in the selected edges
 nodes_to_display = set()
