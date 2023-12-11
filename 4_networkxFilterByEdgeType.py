@@ -4,17 +4,18 @@ import matplotlib.pyplot as plt
 
 # Your data
 edges_data = pd.DataFrame({
-    'src': ['A', 'A'],
-    'dst': ['B', 'C'],
-    'edge_type': ['person_address', 'person_receipt'],
-    'role': ['', 'attorney']
+    'src': ['A', 'A', 'A'],
+    'dst': ['B', 'C', 'D'],
+    'edge_type': ['person_address', 'person_receipt', 'person_address'],
+    'role': ['', 'attorney', '']
 })
+0
 
 nodes_data = pd.DataFrame({
-    'id': ['A','B','C'],
-    'node_type': ['person', 'address', 'receipt'],
-    'node_name': ['ERIC', '123 MAIN ST', 'R12345'],
-    'receipt_payment_date': ['', '', '2023-12-05']
+    'id': ['A','B','C','D'],
+    'node_type': ['person', 'address', 'receipt','address'],
+    'node_name': ['ERIC', '123 MAIN ST', 'R12345', '123 MAIN STREET'],
+    'receipt_payment_date': ['', '', '2023-12-05', '']
 })
 
 # Create a directed graph
